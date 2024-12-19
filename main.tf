@@ -1,26 +1,23 @@
-# Copyright (c) HashiCorp, Inc.
-# SPDX-License-Identifier: MPL-2.0
-
 terraform {
   required_providers {
-    docker = {
-      source = "kreuzwerker/docker"
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 4.16"
     }
   }
+
+  required_version = ">= 1.2.0"
 }
 
-provider "docker" {}
-
-resource "docker_image" "nginx" {
-  name         = "nginx:latest"
-  keep_locally = false
+provider "aws" {
+  region  = "us-west-2"
 }
 
-resource "docker_container" "nginx" {
-  image = docker_image.nginx.name
-  name  = "nginx"
-  ports {
-    internal = 80
-    external = 8000
+resource "aws_instance" "app_server" {
+  ami           = "ami-830c94e3"
+  instance_type = "t2.micro"
+
+  tags = {
+    Name = "ExampleAppServerInstance"
   }
 }
